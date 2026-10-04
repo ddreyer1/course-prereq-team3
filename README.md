@@ -11,11 +11,11 @@ pip install -r requirements.txt
 ```
 ## Adding new dependencies
 
-If you need to add new dependencies, you can do so by running:
+If you need to use a new dependency not already included in the project, you can do so by running:
 
 ```sh
 pip install <package-name>
-pip freeze > requirements.txt
+pipreqs . --print >> requirements.txt
 ```
 
 Only run this with your virtual environment activated. Otherwise, you will modify your global Python environment's packages and incorrectly write to the requirements.txt file.
