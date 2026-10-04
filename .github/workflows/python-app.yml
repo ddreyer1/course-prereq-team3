@@ -19,6 +19,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Check test file locations
+      run: |
+        misplaced=$(find . -path './.git' -prune -o \
+          -type f \( -name 'test_*.py' -o -name '*_test.py' \) \
+          ! -path './tests/*' -print)
+        if [ -n "$misplaced" ]; then
+          printf 'All test files must be under tests/:\n%s\n' "$misplaced"
+          exit 1
+        fi
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
