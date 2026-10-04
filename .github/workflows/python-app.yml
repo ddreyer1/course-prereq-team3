@@ -28,7 +28,7 @@ jobs:
           printf 'All test files must be under tests/:\n%s\n' "$misplaced"
           exit 1
         fi
-    - name: Set up Python 3.10
+    - name: Set up Python 3.13
       uses: actions/setup-python@v3
       with:
         python-version: "3.13"
