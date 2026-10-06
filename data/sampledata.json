@@ -1,0 +1,37 @@
+{
+  "courses": [
+    {
+      "course_id": 1,
+      "course_title": "Data Structures"
+    },
+    {
+      "course_id": 2,
+      "course_title": "Discrete Mathematics"
+    },
+    {
+      "course_id": 3,
+      "course_title": "Algorithms"
+    }
+  ],
+  "prereq_groups": [
+    {
+      "prereq_group_id": 1,
+      "course_id": 3,
+      "group_operator": "AND"
+    }
+  ],
+  "prereqs": [
+    {
+      "prereq_id": 1,
+      "prereq_group_id": 1,
+      "prereq_course_id": 1,
+      "negative_prereq": false
+    },
+    {
+      "prereq_id": 2,
+      "prereq_group_id": 1,
+      "prereq_course_id": 2,
+      "negative_prereq": false
+    }
+  ]
+}
