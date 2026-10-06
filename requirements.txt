@@ -1,1 +1,6 @@
 fastapi[standard]==0.142.2
+
+#for dependency graph buiilding:
+networkx
+#graph visual(only for internal use)
+matplotlib
