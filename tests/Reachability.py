@@ -54,5 +54,3 @@ def check_Reachability(start: int, target: int):
 
     }
 
-result = check_Reachability(3, 2) #testing purposes
-print(result) #testing purposes
