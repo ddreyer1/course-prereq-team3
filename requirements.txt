@@ -4,3 +4,7 @@ fastapi[standard]==0.142.2
 networkx
 #graph visual(only for internal use)
 matplotlib
+#used to validate data from the database
+pydantic
+#used to access the database on supabase
+supabase
