@@ -46,3 +46,7 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+      env:
+        SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        
