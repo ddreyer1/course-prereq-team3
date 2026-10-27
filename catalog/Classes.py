@@ -1,13 +1,13 @@
 #this gets the code from other programs and libraries and databases in order to run correctly
-from fastapi import FastAPI, HTTPException
+from fastapi import HTTPException, APIRouter
 from database.init_db import supabase
 from database.types import Course
 
 #uses fast api
-app = FastAPI()
+router = APIRouter()
 
 #when accessing the website if /courses is entered at the end, it will give a list of all courses and lables associated with them
-@app.get("/courses", response_model = list[Course])
+@router.get("/courses", response_model = list[Course])
 def get_courses():
 
     #error handling that tries to get each class in batches of 100 and place them in a list
@@ -81,7 +81,7 @@ def get_courses():
         raise HTTPException(status_code = 500, detail = str(e)) from e
 
 #does the same as all courses above but whe adding /(course_id) then it will show only that course
-@app.get("/courses/{course_id}", response_model = Course)
+@router.get("/courses/{course_id}", response_model = Course)
 def get_course(course_id: int):
 
     #gets the data of the class from supabase and sets it to the varible response
