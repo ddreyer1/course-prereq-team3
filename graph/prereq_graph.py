@@ -73,22 +73,41 @@ def build_graph(data):
         )
 
     return G
+#return a subgraph containing the course and its prerequisites
+#from course ids or course identifers. 
+def getCoursePrereqs(G, course_id=None, course_identifier=None):
+    target_course_id = None
 
-def draw_graph(G, course_id):
-    prereqs = nx.ancestors(G, course_id)
-    prereqs.add(course_id)
+    if course_id is not None:
+        target_course_id = course_id
+    #makes a subgraph with course identifier if input is valid
+    elif course_identifier is not None:
+        for node,node.data in G.nodes(data=True):
+            if (node.data.get("node_type") == "course" 
+                and node.data.get("course_identifier") == course_identifier):
+                target_course_id = node
+                break
+    #if the input is neither a valid course ID nor a valid course identifier
+    if target_course_id is None or target_course_id not in G:
+        raise ValueError(f"Course ID {course_id} not found in the graph.")
+    
+    #make a subgraph with all ancestor nodes of the target course, 
+    #including the target course itself
+    nodes = nx.ancestors(G, target_course_id)
+    nodes.add(target_course_id)
+    return G.subgraph(nodes).copy()
 
-    subgraph = G.subgraph(prereqs).copy()
+def draw_graph(G):
 
-    pos = nx.spring_layout(subgraph)
+    pos = nx.spring_layout(G)
 
     labels = {
         node: data.get("label", str(node))
-        for node, data in subgraph.nodes(data=True)
+        for node, data in G.nodes(data=True)
     }
 
     nx.draw_networkx(
-        subgraph,
+        G,
         pos,
         with_labels=False,
         node_size=2500,
@@ -96,7 +115,7 @@ def draw_graph(G, course_id):
     )
 
     nx.draw_networkx_labels(
-        subgraph,
+        G,
         pos,
         labels=labels
     )
@@ -105,14 +124,32 @@ def draw_graph(G, course_id):
 
 if __name__ == "__main__":
     data = get_graph_data()
-
     graph = build_graph(data)
-    '''
-    print("Nodes: ")
-    print(graph.nodes(data=True))
+    #display all courseid/identifier
+    print("\nAvailable courses:")
+    for node, node_data in graph.nodes(data=True):
+        if node_data.get("node_type") == "course":
+            print(
+                f"{node}: "
+                f"{node_data.get('course_identifier')} - "
+                f"{node_data.get('label')}"
+            )
 
-    print("\nEdges: ")
-    print(graph.edges())
-    '''
-    draw_graph(graph, 2571)
+    user_input = input("Enter course id or course identifier:")
+    #validate input
+    try:
+        if user_input.isdigit():
+            course_subgraph = getCoursePrereqs(graph, course_id=int(user_input))
+        else:
+            course_subgraph = getCoursePrereqs(graph, course_identifier=user_input)
+        print("\nsubgraph nodes: ")
+        for node, node_data in course_subgraph.nodes(data=True):
+            print(node,node_data)
+        print("\nsubgraph edges: ")
+        for edge in course_subgraph.edges():
+            print(edge)
+        
+        draw_graph(course_subgraph)
+    except ValueError as error:
+        print(error)
 
