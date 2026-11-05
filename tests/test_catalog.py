@@ -3,6 +3,7 @@ import pytest
 from catalog.Classes import get_courses
 from catalog.Classes import get_course
 from fastapi import HTTPException
+from database.init_db import init
 
 #test getting a course
 def test_get_course():
@@ -32,8 +33,17 @@ def test_get_course():
 def test_get_courses():
     courses = get_courses()
 
+    client = init()
+
+    #makes sure the course count updates as courses are added
+    course_count= (
+        client.table("courses")
+        .select("*", count= "exact")
+        .execute()
+    )
+
     #makes sure all courses have been gotten
-    assert len(courses) == 2236 #total number of courses in the courses table. Should not change
+    assert len(courses) == course_count.count #total number of courses in the courses table
     print("All courses succesfully gotten")
 
     #tests that all courses have the required fields
