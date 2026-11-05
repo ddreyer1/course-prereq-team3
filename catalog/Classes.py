@@ -14,6 +14,7 @@ def get_courses():
     try:
 
         all_courses = []
+        all_dis = []
         size = 100
         start = 0
 
@@ -28,16 +29,32 @@ def get_courses():
                 .order("course_id")
                 .range(start, start + size -1)
                 .execute()
-
             )
+
+            response2 = (
+
+                supabase
+                .table("course_descriptions_staging")
+                .select("*")
+                .order("course_identifier")
+                .range(start, start + size -1)
+                .execute()
+            )
+
 
             #stores the data in batch amd places it in the list
             batch = response.data
             all_courses.extend(batch)
 
+            batch2 = response2.data
+            all_dis.extend(batch2)
+
+
             #if length of batch is less then size add change start size
             if len(batch) < size:
+
                 break
+
 
             start += size
 
@@ -48,6 +65,7 @@ def get_courses():
         for course in all_courses:
 
             course = course.copy()
+            
 
             if course.get("credits") is None:
 
@@ -60,6 +78,15 @@ def get_courses():
             if course.get("course_level") is None:
 
                 course["course_level"] = "unknown"
+
+            for dis in all_dis:
+
+                dis = dis.copy()
+                if dis.get("course_identifier") is course.get("course_identifier"):
+
+                    if course.get("course_description") == "NULL":
+
+                        course["course_description"] = dis.get("course_description")
 
             #add those courses to the valid list
             try:
@@ -94,12 +121,34 @@ def get_course(course_id: int):
             .execute()
         )
 
+
+
         #if not in data set tell user it does not exist
         if not response.data:
             raise HTTPException(status_code  = 404, detail =f"Course with ID {course_id} does not exist")
 
         #f any component is missing in the course populate it with default values
         course = response.data[0].copy()
+
+        id = course.get("course_identifier")
+
+
+        response2 = (
+
+            supabase
+            .table("course_descriptions_staging")
+            .select("*")
+            .eq("course_identifier", id)
+            .execute()
+        )
+
+        if response2.data:
+
+            dis = response2.data[0].copy()
+
+        else:
+
+            dis = None
 
         if course.get("credits") is None:
 
@@ -113,6 +162,11 @@ def get_course(course_id: int):
 
             course["course_level"] = "unknown"
 
+        if dis is not None and dis.get("course_identifier") is course.get("course_identifier"):
+
+            if course.get("course_description") == "NULL":
+            
+                course["course_description"] = dis.get("course_description")
 
         try:
             #returns course
@@ -128,6 +182,11 @@ def get_course(course_id: int):
     #raises missing course as a 404 error
     except HTTPException:
         raise
+
+    #errors and tells user
+    except Exception as e:
+
+        raise HTTPException(status_code = 500, detail = f"falied to retrive courses") from e
 
     #errors and tells user
     except Exception as e:
