@@ -1,11 +1,9 @@
 #query from supabase through init() 
-from database.init_db import init
+from database.init_db import supabase
 
 #supabase returns max of 1000 rows. using range() to get all the course/prereq group/prereq data
 def get_all_rows(table_name):
-    #initiate communication to supabase named client through init()
-    client = init()
-
+    
     all_rows = []
     start = 0
     page_size = 1000
@@ -15,7 +13,7 @@ def get_all_rows(table_name):
     while True:
         response= (
             #get data in table_name from supabase
-            client.table(table_name)
+            supabase.table(table_name)
             #all columns
             .select("*")
             .range(start, start + page_size -1)

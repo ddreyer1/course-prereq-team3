@@ -1,11 +1,6 @@
-import json
 import networkx as nx
 import matplotlib.pyplot as plt
-
 from database.queries import get_graph_data
-def load_data(file_path):
-    with open(file_path,"r") as file:
-        return json.load(file)
 
 def build_graph(data):
     #create empty graph
@@ -153,3 +148,11 @@ if __name__ == "__main__":
     except ValueError as error:
         print(error)
 
+
+
+class PrerequisiteGraph:
+    def __init__(self, graph):
+        self.graph = graph
+
+    def get_course_prereqs(self, course_id=None, course_identifier=None):
+        return getCoursePrereqs(self.graph, course_id=course_id, course_identifier=course_identifier)
