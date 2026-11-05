@@ -8,38 +8,38 @@ def build_graph(data):
 
     #add course nodes
     for course in data["courses"]:
-        course_id = course["course_id"]
+        course_id = course.course_id
 
         G.add_node(
             course_id,
             node_type="course",
-            label=course["course_title"],
-            course_identifier=course["course_identifier"]
+            label=course.course_title,
+            course_identifier=course.course_identifier
         )
     #add group nodes
     for group in data["prerequisite_groups"]:
 
-        group_id = f"group_{group['prerequisite_group_id']}"
+        group_id = f"group_{group.prerequisite_group_id}"
 
         G.add_node(
             group_id,
             node_type ="group",
-            operator=group["group_operator"],
-            label=group["group_operator"],
-            course_id=group["course_id"],
-            parent_group_id=group["parent_group_id"]
+            operator=group.group_operator,
+            label=group.group_operator,
+            course_id=group.course_id,
+            parent_group_id=group.parent_group_id
         )
     #connect groups
     for group in data["prerequisite_groups"]:
-        group_id = f"group_{group['prerequisite_group_id']}"
+        group_id = f"group_{group.prerequisite_group_id}"
 
-        parent_id = group["parent_group_id"]
+        parent_id = group.parent_group_id
 
         #if the group has no parent group(root group), connect to target class
         if parent_id is None:
             G.add_edge(
                 group_id,
-                group["course_id"]
+                group.course_id
             )
         #connect sub group to parent group
         else:
@@ -53,18 +53,18 @@ def build_graph(data):
   
     #connect prereq courses to groups
     for prerequisite in data["prerequisites"]:
-        prereq_course = prerequisite["prerequisite_course_id"]
+        prereq_course = prerequisite.prerequisite_course_id
 
         group_id = (
-            f"group_{prerequisite['prerequisite_group_id']}"
+            f"group_{prerequisite.prerequisite_group_id}"
         )
 
         G.add_edge(
             prereq_course,
             group_id,
-            min_grade=prerequisite["min_grade"],
-            concurrent_allowed=prerequisite["concurrent_allowed"],
-            negative_prerequisite=prerequisite["negative_prerequisite"]
+            min_grade=prerequisite.min_grade,
+            concurrent_allowed=prerequisite.concurrent_allowed,
+            negative_prerequisite=prerequisite.negative_prerequisite
         )
 
     return G

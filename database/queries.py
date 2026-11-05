@@ -1,8 +1,8 @@
-#query from supabase through init() 
 from database.init_db import supabase
+from database.types import Course, PrerequisiteGroup, Prerequisite
 
 #supabase returns max of 1000 rows. using range() to get all the course/prereq group/prereq data
-def get_all_rows(table_name):
+def get_all_rows(table_name, type_=None):
     
     all_rows = []
     start = 0
@@ -28,18 +28,20 @@ def get_all_rows(table_name):
         
         start += page_size
 
+    if type_:
+        return [type_(**row) for row in all_rows]
     return all_rows
 #query courses
 def get_courses():
-    return get_all_rows("courses")
+    return get_all_rows("courses", Course)
 
 #query prerequisite_groups
 def get_prereq_groups():
-    return get_all_rows("prerequisite_groups")
+    return get_all_rows("prerequisite_groups", PrerequisiteGroup)
 
 #query prerequisites
 def get_prereqs():
-    return get_all_rows("prerequisites")
+    return get_all_rows("prerequisites", Prerequisite)
 
 #return all of them
 def get_graph_data():
@@ -48,9 +50,3 @@ def get_graph_data():
         "prerequisite_groups": get_prereq_groups(),
         "prerequisites": get_prereqs()
     }
-'''
-if __name__ == "__main__":
-    print("courses:", len(get_courses()))
-    print("groups:", len(get_prereq_groups()))
-    print("prereqs:", len(get_prereqs()))
-'''

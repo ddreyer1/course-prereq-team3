@@ -6,14 +6,14 @@ from typing import Optional
 
 class Course(BaseModel):
     course_id: int
-    department_id: int
-    course_identifier: str
-    course_prefix: str
-    course_title: str
+    department_id: Optional[int]
+    course_identifier: Optional[str]
+    course_prefix: Optional[str]
+    course_title: Optional[str]
     course_description: Optional[str]
-    credits: float
-    course_level: str
-    is_repeatable: bool
+    credits: Optional[float]
+    course_level: Optional[str]
+    is_repeatable: Optional[bool]
 
 
 class Prerequisite(BaseModel):
