@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from database.init_db import supabase
 from catalog.Classes import router as course_route
+from graph.router import router as graph_route
 
 app = FastAPI()
 
 app.include_router(course_route)
+app.include_router(graph_route)
 
 @app.get("/")
 def read_root():
