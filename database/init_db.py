@@ -24,4 +24,4 @@ def init():
 
 
 load_dotenv()
-supabase: Client = init()
+supabase: Client = init() # import supabase from this file to use throughout the project

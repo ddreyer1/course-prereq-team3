@@ -1,7 +1,5 @@
-#import pytest and database functions
-import pytest
-
 from database.queries import get_all_rows, get_courses, get_prereq_groups, get_prereqs, get_graph_data
+from database.types import Course, PrerequisiteGroup, Prerequisite
 
 #test get all
 def test_get_all():
@@ -32,10 +30,7 @@ def test_get_courses():
     assert isinstance(courses, list)
 
     for course in courses:
-
-        assert "course_id" in course
-        assert "course_title" in course
-        assert "course_identifier" in course
+        assert type(course) == Course
 
 
 #tests the get the prereq graph
@@ -47,10 +42,7 @@ def test_get_prereq_graph():
 
     for group in groups:
 
-        assert "prerequisite_group_id" in group
-        assert "course_id" in group
-        assert "group_operator" in group
-        assert "parent_group_id" in group
+        assert type(group) == PrerequisiteGroup
 
 
 
@@ -63,11 +55,7 @@ def test_get_prereqs():
 
     for prerequisite in prereq:
 
-        assert "prerequisite_course_id" in prerequisite
-        assert "prerequisite_group_id" in prerequisite
-        assert "min_grade" in prerequisite
-        assert "concurrent_allowed" in prerequisite
-        assert "negative_prerequisite" in prerequisite
+        assert type(prerequisite) == Prerequisite
 
 #test to get graph data
 def test_get_graph_data():
